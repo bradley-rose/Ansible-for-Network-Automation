@@ -1,0 +1,23 @@
+---
+- name: Backup single-context ASA running-config to file
+  cisco.asa.asa_config:
+    backup: yes
+    backup_options:
+      filename: "{{ inventory_hostname }}_running-config.txt"
+      dir_path: "/mnt/configs/{{ directory }}"
+
+- name: Exclude lines from config file
+  ansible.builtin.lineinfile:
+    path: "/mnt/configs/{{ directory }}/{{ inventory_hostname }}_running-config.txt"
+    search_string: '{{ item.stringToExclude }}'
+    state: absent
+  loop:
+    - {stringToExclude: '!Time:'}
+    - {stringToExclude: 'DNAC-AAA'}
+    - {stringToExclude: 'NVRAM config'}
+
+- name: Update newlines for Windows
+  ansible.builtin.replace:
+    path: "/mnt/configs/{{ directory }}/{{ inventory_hostname }}_running-config.txt"
+    regexp: '\n'
+    replace: '\r\n'

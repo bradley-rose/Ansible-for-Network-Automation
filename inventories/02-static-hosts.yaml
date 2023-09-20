@@ -1,0 +1,60 @@
+---
+all:
+  vars:
+    ansible_user: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          63346133613632616333366138396264623436303435383736633833616364333162306163383131
+          6239633061353633316665313939373534366161316366630a326537326136633730333130653130
+          62656239313964613732313266623163353336663864393431326265313632303532623830356131
+          3832323939303436660a393833306562643835303130656532316438306330396238313062323430
+          3964
+    ansible_ssh_pass: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          37306239643239333233623864643732653332333161366531646364323465313736333965613063
+          3066303031363234663432633634393638656332626338340a313137336239393365666533643061
+          31356562313932326666316539343730643731363537376465653862336334636666633739663034
+          3534633165666639640a376636363862646232353834623234623130333737346134646134323161
+          65643061303535323638353035613433333933303162613637643165363036663734
+    ansible_connection: ansible.netcommon.network_cli
+  
+  children:
+    platforms_asa:
+      vars:
+        ansible_network_os: asa
+    platforms_ios:
+      vars:
+        ansible_network_os: ios
+    platforms_nxos:
+      vars:
+        ansible_network_os: nxos
+        
+    device_roles_firewall:
+      vars:
+        ansible_network_os: asa
+        directory: Firewalls
+      
+      hosts:
+        hostA:
+          ansible_host: 10.69.42.1
+          ansible_user: username
+          ansible_ssh_password: password
+          
+    device_roles_switch:
+      vars:
+        directory: Switches
+      hosts:
+        hostB: 
+          ansible_user: 'anotherUsername'
+          ansible_ssh_pass: 'anotherPassword'
+
+    device_roles_wireless_controller:
+      vars:
+        directory: WLCs
+
+    device_roles_voice_and_telephony:
+      vars:
+        directory: Voice
+
+    device_roles_router:
+      vars:
+        directory: Routers

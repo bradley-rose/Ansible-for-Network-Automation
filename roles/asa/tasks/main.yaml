@@ -1,0 +1,19 @@
+---
+### For some reason, Ansible is translating the "show mode" to a "show version", so the output does have to be manipulated for this to properly work.
+### This has not been completed in this task file. Must be updated to work properly.
+
+- name: Determine if single or multiple context firewall
+  cisco.asa.asa_command:
+    commands:
+    - 'show mode'
+  register: output
+
+- name: Redirect to regular backup
+  ansible.builtin.include_tasks:
+    file: singleContext.yaml
+  when: output.stdout.find('single') != -1
+
+- name: Redirect to multiple context backup
+  ansible.builtin.include_tasks:
+    file: multiContext.yaml
+  when: output.stdout.find('multiple') != -1

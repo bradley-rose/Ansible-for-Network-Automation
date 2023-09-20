@@ -1,0 +1,17 @@
+---
+- name: Obtain context names
+  cisco.asa.asa_command:
+    commands:
+    - changeto system
+    - show run context | i ^context
+  register: contextNames
+
+- name: Backup Contexts
+  cisco.asa.asa_config:
+    context: "{{ item.split(' ')[1] }}"
+    backup: yes
+    backup_options:
+      filename: "{{ inventory_hostname }}_{{ item.split(' ')[1] }}.cfg"
+      dir_path: "/mnt/configs/{{ directory }}"
+  loop:
+    "{{ contextNames.stdout_lines[1] }}"
